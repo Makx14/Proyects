@@ -1,0 +1,56 @@
+#include<LiquidCrystal_I2C.h>
+LiquidCrystal_I2C gameB (0x27,16,2);
+#include <Servo.h>
+#define sensor A0
+#define Pepe 3
+int val_sensor, frecuencia;
+float centi;
+Servo servoMotor;
+
+void setup() {
+Serial.begin(9600);
+servoMotor.attach(9); 
+gameB.init();
+gameB.backlight();
+
+}
+
+void loop() {
+val_sensor = analogRead(sensor);
+centi = val_sensor * 500.0/1023;
+frecuencia = map(centi,20,25,2000,100);
+Serial.print("Temperatura:   ");
+Serial.print(centi),
+Serial.print("Frecuencia:   ");
+Serial.println(frecuencia);
+if(frecuencia<100)
+{
+  frecuencia=100;
+}
+tone(Pepe, 1000);
+servoMotor.write(30);
+delay(frecuencia);
+noTone(Pepe);
+servoMotor.write(60);
+
+delay(frecuencia);
+if(centi>23)
+{
+gameB.setCursor(0,0);
+gameB.print(" Estas enamorado ");
+}
+if(centi<22 and centi>19)
+{
+gameB.setCursor(0,0);
+gameB.print(" Mas o menos ");
+
+}
+if(centi<19)
+{
+  gameB.setCursor(0,0);
+gameB.print(" Te falta calor PAPI ");
+}
+}
+
+
+  
